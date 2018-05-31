@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+  namespace: default
+  labels:
+    app: web-server
+spec:
+  selector:
+    app: web-server
+    backend: go
+  ports:
+  - port: 5566 # 服務之間互相訪問的 port
+    protocol: TCP
+    targetPort: 5566 # 後端 pod 暴露的 port
