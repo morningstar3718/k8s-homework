@@ -5,10 +5,11 @@ metadata:
   namespace: default
   labels:
     app: nginx
+    env: reverse-proxy
 spec:
   containers:
-  - image: nginx:latest
-    name: nginx
+  - image: morningstar3718/k8s-hw-nginx-reverse-proxy:32e3953
+    name: nginx-reverse-proxy
     ports:
       - containerPort: 80 # container port
         protocol: TCP
