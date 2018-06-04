@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: web
+  name: web-deploy
+  namespace: k8s-user-1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      run: web
+  strategy:
+    rollingUpdate:
+      maxSurge: 1 # 升級過程中最多可以比原先設定所多出的 pod 數量
+      maxUnavailable: 1 # 最多可以有幾個 pod 處在無法服務的狀態
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: web
+    spec:
+      containers:
+      - image: morningstar3718/k8s-hw-web-server:424b3ac
+        imagePullPolicy: IfNotPresent
+        name: web-go
+        ports:
+        - containerPort: 12345
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 200m
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web-hpa
+  namespace: k8s-user-1
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web-deploy
+  targetCPUUtilizationPercentage: 50
